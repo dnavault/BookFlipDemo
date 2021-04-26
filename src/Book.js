@@ -1,18 +1,23 @@
 import React, { useState } from "react";
-import {
-  useSprings,
-  animated,
-  interpolate
-} from "react-spring";
+import { useSprings, animated, interpolate } from "react-spring";
 import { useGesture } from "react-use-gesture";
 import { bookWidth, bookHeight } from "./config";
 import { calculate } from "./calculate";
-
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
+import BookListContainer from "./data/BookListContainer";
 
 import "./book.scss";
 
-const pages = ["brown", "white", "white", "white", "white", "white", "white", "brown"];
+const pages = [
+  "white",
+  "white",
+  "white",
+  "white",
+  "white",
+  "white",
+  "white",
+  "brown"
+];
 
 const html = {
   0: "<div class=\"title\"><h1>Halloween's stories</h1><img src='https://raw.githubusercontent.com/pylnata/livebook/master/public/images/0.png' /></div>",
@@ -71,7 +76,7 @@ const html = {
 
 let pageWidth = bookWidth / 2;
 
-const from = i => ({
+const from = (i) => ({
   x: pageWidth,
   y: 0,
   x1: 0,
@@ -100,7 +105,6 @@ const from = i => ({
 const to = from;
 
 const Book = () => {
-
   //const bind2 = useScroll(state => {return false}, { domTarget: window })
   //React.useEffect(bind2, [bind2])
 
@@ -114,17 +118,18 @@ const Book = () => {
   // TODO: disable drag until previous action is'nt finshed
   const [previousWasFinished, setPreviousWasFinished] = useState(true);
 
-  const [props, set] = useSprings(pages.length, i => ({
+  const [props, set] = useSprings(pages.length, (i) => ({
     ...to(i),
     from: from(i)
   }));
 
-// TODO: on hover make bottom corner of first page flipping
+  // TODO: on hover make bottom corner of first page flipping
   const onHoverHandler = ({ hovering, down }) => {
-    return false;
     if (hovering) {
       if (down) return false;
     }
+
+    return false;
   };
 
   const onDragHandler = ({
@@ -160,7 +165,7 @@ const Book = () => {
       friction: 0,
       tension: down ? 0 : 100, // TODO find optimal params
       clamp: true,
-      precision: 0,
+      precision: 0
     };
 
     const to = {
@@ -213,7 +218,7 @@ const Book = () => {
     setPreviousWasFinished(false);
 
     const onFinishTurnFromRight = () => {
-      set(i => {
+      set((i) => {
         if (i === index)
           return {
             ...to,
@@ -246,15 +251,15 @@ const Book = () => {
             immediate: true
           };
 
-          if(i === index+4) {
-            return {
-              ...to,
-              x: pageWidth,
-              z: 0,
-              display: "block",
-              immediate: true
-            };
-          }
+        if (i === index + 4) {
+          return {
+            ...to,
+            x: pageWidth,
+            z: 0,
+            display: "block",
+            immediate: true
+          };
+        }
         return { ...to, z: 0, display: "none", immediate: true };
       });
 
@@ -263,7 +268,7 @@ const Book = () => {
     };
 
     const onFinishTurnFromLeft = () => {
-      set(i => {
+      set((i) => {
         if (i === index)
           return {
             ...to,
@@ -288,15 +293,15 @@ const Book = () => {
             display: "block",
             immediate: true
           };
-          if(i === index+1) {
-            return {
-              ...to,
-              x: pageWidth,
-              z: 0,
-              display: "block",
-              immediate: true
-            };
-          }
+        if (i === index + 1) {
+          return {
+            ...to,
+            x: pageWidth,
+            z: 0,
+            display: "block",
+            immediate: true
+          };
+        }
         return { ...to, z: 0, display: "none", immediate: true };
       });
       console.log("finished-left");
@@ -308,11 +313,10 @@ const Book = () => {
       else if (!needFinishTurn && !down) setPreviousWasFinished(true);
     };
 
-    const onRestFnRight = x => {
+    const onRestFnRight = (x) => {
       if (!down && needFinishTurn) {
         onFinishTurnFromRight();
-      }
-      else if (!down && !needFinishTurn) {
+      } else if (!down && !needFinishTurn) {
         setPreviousWasFinished(true);
       }
     };
@@ -331,7 +335,7 @@ const Book = () => {
 
     //if (down) console.log(rotationParams);
 
-    set(i => {
+    set((i) => {
       let x1 = 0;
       let y1 = 0;
       let x2 = 0;
@@ -381,7 +385,7 @@ const Book = () => {
                 y5: bookHeight,
                 immediate: true,
                 onRest: () => {
-                  set(i => {
+                  set((i) => {
                     if (i === index) {
                       dist = pageWidth; // hack
                       return {
@@ -397,7 +401,7 @@ const Book = () => {
                         y5: bookHeight,
                         immediate: true,
                         onRest: () => {
-                          set(i => {
+                          set((i) => {
                             if (i === index) {
                               return {
                                 x: bookWidth,
@@ -661,14 +665,14 @@ const Book = () => {
                 y5: bookHeight,
                 immediate: true,
                 onRest: () => {
-                  set(i => {
+                  set((i) => {
                     if (i === index) {
                       return {
                         x2: pageWidth - memo.x2,
                         x3: pageWidth - memo.x2,
                         immediate: true,
                         onRest: () => {
-                          set(i => {
+                          set((i) => {
                             if (i === index) {
                               return {
                                 immediate: false,
@@ -709,13 +713,12 @@ const Book = () => {
     if (down) {
       return memoRotationParams;
     }
-
   };
 
   const bind = useGesture(
     {
       onDrag: onDragHandler, // fires on drag
-      onScroll: state => {
+      onScroll: (state) => {
         return state;
       }, // fires on scroll
       onHover: onHoverHandler
@@ -765,7 +768,7 @@ const Book = () => {
               backgroundColor: pages[i],
               backgroundPositionX: 0,
               backgroundImage:
-                (i % 2 === 1 && i !== props.length-1)
+                i % 2 === 1 && i !== props.length - 1
                   ? interpolate([x2, bgRad], (x2, bgRad) => {
                       return `linear-gradient(to right,
          rgb(230, 230, 230) 0%,
@@ -802,9 +805,7 @@ const Book = () => {
             className={`page page--${i} `}
             {...bind(i)}
           >
-            <div
-              dangerouslySetInnerHTML={{ __html: html[i] }}
-            ></div>
+            <div dangerouslySetInnerHTML={{ __html: html[i] }}></div>
           </animated.div>
           {false && i === index.value + 2 && (
             <animated.div
@@ -840,9 +841,8 @@ const Book = () => {
       <div id="book-container" style={{ width: bookWidth, height: bookHeight }}>
         {content}
       </div>
-      <div className="copy">
-      Drag page to flip
-      </div>
+      <div className="copy">Drag page to flip</div>
+      <BookListContainer />
     </>
   );
 };
