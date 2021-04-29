@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
 
 function BookListContainer() {
-  const [data, setData] = useState(null);
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       let response = await fetch(
-        "https://hn.algolia.com/api/v1/search?query=redux"
+        "https://fakerapi.it/api/v1/books?_quantity=100"
       );
       response = await response.json();
-      console.log(response);
-      setData(response);
+      console.log(response.data);
+      setBooks(response.data);
     }
     fetchData();
   }, []);
 
-  return <div>{JSON.stringify(data)}</div>;
-}
-
+  return (
+    <>
+    {books.map(item => <div>{item.title}</div>)};
+    </>
+    );
+  }
 export default BookListContainer;

@@ -4,8 +4,6 @@ import { useGesture } from "react-use-gesture";
 import { bookWidth, bookHeight } from "./config";
 import { calculate } from "./calculate";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
-import BookListContainer from "./data/BookListContainer";
-
 import "./book.scss";
 
 const pages = [
@@ -842,7 +840,7 @@ const Book = () => {
         {content}
       </div>
       <div className="copy">Drag page to flip</div>
-      <BookListContainer />
+      
     </>
   );
 };
